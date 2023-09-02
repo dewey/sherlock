@@ -104,11 +104,11 @@
 	
 	function checkPresence($username){
 		global $sqlserver, $sqluser, $sqlpw, $sqldb;
-		$sqlconnection=mysql_connect($sqlserver,$sqluser,$sqlpw);
-		mysql_select_db($sqldb,$sqlconnection);
-		$sqlstr = "SELECT id from usernames WHERE username = '".mysql_real_escape_string($username)."' LIMIT 1";
-		$sqlquery=mysql_query($sqlstr,$sqlconnection);
-		if(mysql_num_rows($sqlquery)==0){
+		$sqlconnection=mysqli_connect($sqlserver,$sqluser,$sqlpw);
+		mysqli_select_db($sqlconnection, $sqldb);
+		$sqlstr = "SELECT id from usernames WHERE username = '".mysqli_real_escape_string($sqlconnection, $username)."' LIMIT 1";
+		$sqlquery=mysqli_query($sqlconnection, $sqlstr);
+		if(mysqli_num_rows($sqlquery)==0){
 			return 0;
 		}
 		return 1;
@@ -120,11 +120,11 @@
 		if ($already == 1) {
 			return false;
 		}
-                $sqlconnection=mysql_connect($sqlserver,$sqluser,$sqlpw);
-                mysql_select_db($sqldb,$sqlconnection);
-                $sqlstr = "INSERT into usernames (username, userid) values('".mysql_real_escape_string($username)."', '".mysql_real_escape_string($userid)."');";
-                $sqlquery=mysql_query($sqlstr,$sqlconnection);
-		$newid = mysql_insert_id();
+                $sqlconnection=mysqli_connect($sqlserver,$sqluser,$sqlpw);
+                mysqli_select_db($sqlconnection,$sqldb);
+                $sqlstr = "INSERT into usernames (username, userid) values('".mysqli_real_escape_string($sqlconnection,$username)."', '".mysqli_real_escape_string($sqlconnection,$userid)."');";
+                $sqlquery=mysqli_query($sqlconnection, $sqlstr);
+				$newid = mysqli_insert_id($sqlconnection);
                 return true;
         }
 	
@@ -172,14 +172,14 @@
 		foreach($information as $i){
 			$sqlstr.=" {$dbmap[$i]} , ";
 		}
-		$sqlconnection=mysql_connect($sqlserver,$sqluser,$sqlpw);
-		mysql_select_db($sqldb,$sqlconnection);
-		$sqlstr.="date\nFROM $sqltable\nWHERE username = '".mysql_real_escape_string($_SESSION['username'])."' AND `date` > '$startDate'\nORDER BY `date` ASC";
-		$sqlquery=mysql_query($sqlstr,$sqlconnection);
-		if(mysql_num_rows($sqlquery)==0){
+		$sqlconnection=mysqli_connect($sqlserver,$sqluser,$sqlpw);
+		mysqli_select_db($sqlconnection,$sqldb);
+		$sqlstr.="date\nFROM $sqltable\nWHERE username = '".mysqli_real_escape_string($sqlconnection,$_SESSION['username'])."' AND `date` > '$startDate'\nORDER BY `date` ASC";
+		$sqlquery=mysqli_query($sqlconnection, $sqlstr);
+		if(mysqli_num_rows($sqlquery)==0){
 
 		}
-		while($r=mysql_fetch_assoc($sqlquery)){
+		while($r=mysqli_fetch_assoc($sqlquery)){
 			$date=strtotime($r['date']);
 			$thisrow=array();
 			foreach($r as $thisri=>$thisrv){
@@ -197,14 +197,14 @@
 						$thisrow["date"]=strtotime($thisrv)+$offset;
 						break;
 					default:
-						if(strstr($thisri,"Type")) continue;
+						if(strstr($thisri,"Type")) break;
 						$thisrow[$thisri]=floatval($thisrv);
 				}
 				
 			}
 			$data[$thisrow["date"]]=$thisrow;
 		}
-		mysql_close($sqlconnection);
+		mysqli_close($sqlconnection);
 		return $data;
 	}
 
@@ -226,12 +226,12 @@
 				$startDate = date("Y-m-d H:i:s",time()-60*60*24);
 				break;
 		}
-		$sqlconnection=mysql_connect($sqlserver,$sqluser,$sqlpw);
-		mysql_select_db($sqldb,$sqlconnection);
-		$sth=mysql_query("SELECT * FROM statistics WHERE username = '$username' && date < '$startDate' ORDER BY date DESC LIMIT 1", $sqlconnection);
-		$substh=mysql_query("SELECT * FROM statistics WHERE username = '$username' ORDER BY date DESC LIMIT 1", $sqlconnection);
-		$past = mysql_fetch_assoc($sth);
-		$present = mysql_fetch_assoc($substh);
+		$sqlconnection=mysqli_connect($sqlserver,$sqluser,$sqlpw);
+		mysqli_select_db($sqlconnection,$sqldb);
+		$sth=mysqli_query($sqlconnection, "SELECT * FROM statistics WHERE username = '$username' && date < '$startDate' ORDER BY date DESC LIMIT 1");
+		$substh=mysqli_query($sqlconnection, "SELECT * FROM statistics WHERE username = '$username' ORDER BY date DESC LIMIT 1");
+		$past = mysqli_fetch_assoc($sth);
+		$present = mysqli_fetch_assoc($substh);
 		foreach($present as $i=>$v){
 			switch($i){
 				case "uploaded":
@@ -247,7 +247,7 @@
 						  getBytes("{$past['buffer']} {$past['buffType']}");
 					break;
 				default:
-					if(strstr($i,"Type")||$i=="date"||$i=="id") continue;
+					if(strstr($i,"Type")||$i=="date"||$i=="id") break;
 					$data[$i]=floatval($present[$i])-floatval($past[$i]);
 			}
 		}
@@ -257,10 +257,10 @@
 	function currentStats($username){
 		global $sqlserver, $sqluser, $sqlpw, $sqldb;
 		$data=array();
-		$sqlconnection=mysql_connect($sqlserver,$sqluser,$sqlpw);
-		mysql_select_db($sqldb,$sqlconnection);
-		$substh=mysql_query("SELECT * FROM statistics WHERE username = '$username' ORDER BY date DESC LIMIT 1", $sqlconnection);
-		$present = mysql_fetch_assoc($substh);
+		$sqlconnection=mysqli_connect($sqlserver,$sqluser,$sqlpw);
+		mysqli_select_db($sqlconnection,$sqldb);
+		$substh=mysqli_query($sqlconnection, "SELECT * FROM statistics WHERE username = '$username' ORDER BY date DESC LIMIT 1");
+		$present = mysqli_fetch_assoc($substh);
 		if(!is_array($present)) return -1;
 		foreach($present as $i=>$v){
 			switch($i){
@@ -274,7 +274,7 @@
 					$data[$i]=getBytes("{$present['buffer']} {$present['buffType']}");
 					break;
 				default:
-					if(strstr($i,"Type")||$i=="date"||$i=="id") continue;
+					if(strstr($i,"Type")||$i=="date"||$i=="id") break;
 					$data[$i]=floatval($present[$i]);
 			}
 		}
@@ -307,16 +307,16 @@
 					$checkDate = date("Y-m-d H:i:s",time()-60*60*24*2);
 					break;
 			}
-			$sqlconnection=mysql_connect($sqlserver,$sqluser,$sqlpw);
-			mysql_select_db($sqldb,$sqlconnection);
-			$userSth=mysql_query("SELECT username FROM usernames",$sqlconnection);
-			while($username=mysql_fetch_row($userSth)){
+			$sqlconnection=mysqli_connect($sqlserver,$sqluser,$sqlpw);
+			mysqli_select_db($sqlconnection,$sqldb);
+			$userSth=mysqli_query($sqlconnection, "SELECT username FROM usernames");
+			while($username=mysqli_fetch_row($userSth)){
 				$username=$username[0];
-				$sth=mysql_query("SELECT buffer, buffType FROM statistics WHERE username = '$username' && date < '$startDate' ORDER BY date DESC LIMIT 1", $sqlconnection);
-				if(mysql_num_rows($sth) > 0){
-					if($substh=mysql_query("SELECT buffer, buffType FROM statistics WHERE username = '$username' ORDER BY date DESC LIMIT 1", $sqlconnection)){
-						$past = mysql_fetch_row($sth);
-						$present = mysql_fetch_row($substh);
+				$sth=mysqli_query($sqlconnection, "SELECT buffer, buffType FROM statistics WHERE username = '$username' && date < '$startDate' ORDER BY date DESC LIMIT 1");
+				if(mysqli_num_rows($sth) > 0){
+					if($substh=mysqli_query($sqlconnection, "SELECT buffer, buffType FROM statistics WHERE username = '$username' ORDER BY date DESC LIMIT 1")){
+						$past = mysqli_fetch_row($sth);
+						$present = mysqli_fetch_row($substh);
 						list ($change, $changeType) = calculateBuffer($present[0],$present[1],$past[0],$past[1]);
 						if($change == 0) { continue; }
 						$unsorted = array($username, getBytes("$change $changeType"));

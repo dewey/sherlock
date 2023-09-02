@@ -64,7 +64,7 @@
       <div id="custom_graphs" class="page_section">
         <div class="section_head clearfix">
           <div class="primary">
-            <h3><?php echo count($prefs['cGraphs']); ?> graphs</h3>
+            <h3><?php if(is_array($prefs['cGraphs'])) {echo count($prefs['cGraphs']); }?> graphs</h3>
           </div>
           <div class="secondary">
             <ul class="section_head_links">

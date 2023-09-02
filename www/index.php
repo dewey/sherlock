@@ -277,7 +277,7 @@
         </div>        
       </div>
       
-      <?php if(count($prefs['cGraphs'])){ ?>
+      <?php if(is_array($output) && count($prefs['cGraphs'])){ ?>
       <div id="custom_graphs" class="page_section">
         <div class="section_head clearfix"><div class="primary"><h3>Custom Graphs</h3></div></div>
         <div class="section_body">

@@ -97,7 +97,7 @@
       <div class="page_section" id="graph_manager">
         <div class="section_head clearfix">
           <div class="primary">
-            <h3><?php echo count($prefs['cGraphs']); ?> graphs</h3>
+            <h3><?php if(is_array($prefs['cGraphs'])) { echo count($prefs['cGraphs']); } ?> graphs</h3>
           </div>
           <div class="secondary">
           </div>

@@ -4,11 +4,11 @@
 
         function checkPresence($username){ 
 		global $sqlserver, $sqluser, $sqlpw, $sqldb;
-                $sqlconnection=mysql_connect($sqlserver,$sqluser,$sqlpw);
-                mysql_select_db($sqldb,$sqlconnection);
-                $sqlstr = "SELECT id from usernames WHERE username = '".mysql_real_escape_string($username)."' LIMIT 1";
-                $sqlquery=mysql_query($sqlstr,$sqlconnection);
-                if(mysql_num_rows($sqlquery)==0){
+                $sqlconnection=mysqli_connect($sqlserver,$sqluser,$sqlpw);
+                mysqli_select_db($sqlconnection,$sqldb);
+                $sqlstr = "SELECT id from usernames WHERE username = '".mysqli_real_escape_string($sqlconnection,$username)."' LIMIT 1";
+                $sqlquery=mysqli_query($sqlconnection, $sqlstr);
+                if(mysqli_num_rows($sqlquery)==0){
                         return 0;
                 }
                 return 1;
@@ -20,11 +20,11 @@
                 if ($already == 1) {
                         return false;
                 }
-                $sqlconnection=mysql_connect($sqlserver,$sqluser,$sqlpw);
-                mysql_select_db($sqldb,$sqlconnection);
-                $sqlstr = "INSERT into usernames (username, userid) values('".mysql_real_escape_string($username)."', '".mysql_real_escape_string($userid)."');";
-                $sqlquery=mysql_query($sqlstr,$sqlconnection);
-                $newid = mysql_insert_id();
+                $sqlconnection=mysqli_connect($sqlserver,$sqluser,$sqlpw);
+                mysqli_select_db($sqlconnection,$sqldb);
+                $sqlstr = "INSERT into usernames (username, userid) values('".mysqli_real_escape_string($sqlconnection,$username)."', '".mysqli_real_escape_string($sqlconnection,$userid)."');";
+                $sqlquery=mysqli_query($sqlconnection, $sqlstr);
+                $newid = mysqli_insert_id($sqlconnection);
                 return true;
         }
 
