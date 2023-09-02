@@ -16,7 +16,7 @@
     $_SESSION['graphPrefs[0]'] = $_GET['graphPrefs[0]'];
     $_SESSION['graphPrefs[1]'] = $_GET['graphPrefs[1]'];
     
-    if(count($prefs['tz'])){
+    if(is_array($prefs['tz']) && count($prefs['tz'])){
       $tz=timezone_name_from_abbr("", intval($prefs['tz'][0])*60*60, $prefs['tz'][1]);
     } else {
       $tz="default";
