@@ -1,6 +1,9 @@
 <?php
 //	include_once "config.inc.php";
-	session_start();
+	if(!isset($_SESSION)) 
+    { 
+        session_start(); 
+    } 
 	if(isset($_GET['logout'])){
 		unset($_SESSION['whatauth']);
 		unset($_SESSION['username']);

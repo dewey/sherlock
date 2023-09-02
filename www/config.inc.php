@@ -24,7 +24,10 @@
 	global $OHS;
 	if(!isset($OHS)){
 	session_set_cookie_params(60*60*24*365);
-	session_start();
+    if(!isset($_SESSION)) 
+    { 
+        session_start(); 
+    } 
 	if(!isset($_SESSION['whatauth'])||!isset($_SESSION['username'])){
 		if(!isset($_POST['pass'])||$_POST['pass']!="$site_pw"){
 ?>
