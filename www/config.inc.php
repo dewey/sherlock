@@ -59,7 +59,7 @@
 			</style>
 		</head>
 		<body>
-			<div class="head">Sherlock (what.cd)</div>
+			<div class="head">Sherlock (Redacted)</div>
 			<?php
 			if(isset($_POST['pass'])) $_GET['err']=2;
 			if(isset($_GET['err'])){

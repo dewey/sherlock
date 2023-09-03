@@ -21,10 +21,10 @@ services:
     ports:
       - '3333:3333'
     environment:
-      - API_TOKEN=$(op item get iaezqmuuxnfw3d7r3fymkpgqzi --fields "API token (Sherlock))
-      - API_HOSTNAME=$(op item get iaezqmuuxnfw3d7r3fymkpgqzi --fields "API hostname (Sherlock))
+      - API_TOKEN=${API_TOKEN}
+      - API_HOSTNAME=${API_HOSTNAME}
       - DSN=root:mypass@(host.docker.internal:3306)/WHATstats
-      - INTERVAL=30 * * * *
+      - INTERVAL=*/10 * * * *
       - PORT=3333
     extra_hosts:
       - "host.docker.internal:host-gateway"

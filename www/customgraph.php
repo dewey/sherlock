@@ -79,7 +79,7 @@
   
     <div id="navigation_bar">
       <ul id="navigation">
-        <li id="user_navitem"><a href="index.php">What.cd statistics for <?php echo $_SESSION['username']; ?></a></li>
+        <li id="user_navitem"><a href="index.php">Redacted statistics for <?php echo $_SESSION['username']; ?></a></li>
         <li id="topten_navitem"><a href="topten.php">Top 10</a></li>
         <li id="preferences_navitem"><a href="prefs.php">Preferences</a></li>
         <li id="graphmanager_navitem"><a href="graphManager.php">Graph Manager</a></li>

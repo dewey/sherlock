@@ -38,8 +38,8 @@
 	} else {
 ?>
 	<form action="" method="get">
-		What.CD username: <input type="text" name="username" /> <br />
-		What.CD userid: <input type="text" name="userid" /> <br />
+		Redacted username: <input type="text" name="username" /> <br />
+		Redacted userid: <input type="text" name="userid" /> <br />
 		<input type="submit" value="Add me!" />
 	</form>
 
